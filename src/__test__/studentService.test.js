@@ -102,4 +102,42 @@ describe('Student Service', () => {
         })
         expect(toObject).toHaveBeenCalled();
     })
+    it('addScore delegates to repository', async () => {
+        const updated = { id: 6 };
+        mockRepo.updateStudent.mockResolvedValue(updated);
+
+        const result = await studentService.addScore(6, 'Math', 99);
+
+        expect(result).toEqual(updated);
+        expect(mockRepo.updateStudent).toHaveBeenCalledWith(6, {'scores.Math': 99});
+    });
+
+    it('findByName delegates to repository', async () => {
+        const list = [{ id: 7, name: 'Eva' }];
+        mockRepo.findStudentsByName.mockResolvedValue(list);
+
+        const result = await studentService.findByName('Eva');
+
+        expect(result).toEqual(list);
+        expect(mockRepo.findStudentsByName).toHaveBeenCalledWith('Eva');
+    });
+
+    it('countByNames delegates to repository', async () => {
+        mockRepo.countStudentsByNames.mockReturnValue(2);
+
+        const result = await studentService.countByNames(['Ann', 'Bob']);
+
+        expect(result).toBe(2);
+        expect(mockRepo.countStudentsByNames).toHaveBeenCalledWith(['Ann', 'Bob']);
+    });
+
+    it('findByMinScore delegates to repository', async () => {
+        const list = [{ _id: '8', scores: { Math: 90 } }];
+        mockRepo.findStudentsByMinScore.mockResolvedValue(list);
+
+        const result = await studentService.findByMinScore('Math', 80);
+
+        expect(result).toEqual(list);
+        expect(mockRepo.findStudentsByMinScore).toHaveBeenCalledWith('Math', 80);
+    });
 })
