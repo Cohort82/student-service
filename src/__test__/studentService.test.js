@@ -102,6 +102,12 @@ describe('Student Service', () => {
         })
         expect(toObject).toHaveBeenCalled();
     })
+    it('updateStudent returns undefined when student does not exists', async () => {
+        mockRepo.updateStudent.mockResolvedValue(null);
+
+        const result = await studentService.updateStudent(5, {name: 'Peter'});
+        expect(result).toBeUndefined();
+    })
     it('addScore delegates to repository', async () => {
         const updated = { id: 6 };
         mockRepo.updateStudent.mockResolvedValue(updated);
@@ -132,7 +138,7 @@ describe('Student Service', () => {
     });
 
     it('findByMinScore delegates to repository', async () => {
-        const list = [{ _id: '8', scores: { Math: 90 } }];
+        const list = [{ id: 8, scores: { Math: 90 } }];
         mockRepo.findStudentsByMinScore.mockResolvedValue(list);
 
         const result = await studentService.findByMinScore('Math', 80);
